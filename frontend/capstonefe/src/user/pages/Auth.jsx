@@ -115,7 +115,7 @@ const Auth = () => {
               type="text"
               label="Your Name"
               validators={[VALIDATOR_REQUIRE()]}
-              errorText="Please enter a name."
+              errorText="Please enter your name"
               onInput={inputHandler}
             />
           )}
@@ -124,7 +124,7 @@ const Auth = () => {
               center
               id="image"
               onInput={inputHandler}
-              errorText="Please provide an image."
+              errorText="Please provide an image"
             />
           )}
           <Input
@@ -133,7 +133,7 @@ const Auth = () => {
             type="email"
             label="E-Mail"
             validators={[VALIDATOR_EMAIL()]}
-            errorText="Please enter a valid email address."
+            errorText="Please enter a valid email address"
             onInput={inputHandler}
           />
           <Input
@@ -146,11 +146,11 @@ const Auth = () => {
             onInput={inputHandler}
           />
           <Button type="submit" disabled={!formState.isValid}>
-            {isLoginMode ? 'LOGIN' : 'SIGNUP'}
+            {isLoginMode ? 'Login' : 'SignUp'}
           </Button>
         </form>
         <Button inverse onClick={switchModeHandler}>
-          SWITCH TO {isLoginMode ? 'SIGNUP' : 'LOGIN'}
+          Switch To {isLoginMode ? 'SignUp' : 'Login'}
         </Button>
       </Card>
     </React.Fragment>

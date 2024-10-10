@@ -39,8 +39,8 @@
 
 .button--danger:hover,
 .button--danger:active {
-  background: #f34343;
-  border-color: #f34343;
+  background: #870404;
+  border-color: #8f0707;
 }
 
 .button:disabled,

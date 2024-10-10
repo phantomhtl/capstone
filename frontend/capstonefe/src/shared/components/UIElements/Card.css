@@ -5,5 +5,6 @@
   border-radius: 6px;
   padding: 1rem;
   overflow: hidden;
-  background: white;
+  text-align: center;
+  background: rgb(203, 215, 226);
 }
