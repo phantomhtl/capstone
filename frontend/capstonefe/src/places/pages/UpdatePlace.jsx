@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { useParams, useNavigate } from 'react-router-dom'; // Updated useHistory to useNavigate
+import { useParams, useNavigate } from 'react-router-dom'; 
 
 import Input from '../../shared/components/FormElements/Input';
 import Button from '../../shared/components/FormElements/Button';
@@ -20,7 +20,7 @@ const UpdatePlace = () => {
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const [loadedPlace, setLoadedPlace] = useState();
   const placeId = useParams().placeId;
-  const navigate = useNavigate(); // Use navigate instead of useHistory
+  const navigate = useNavigate(); 
 
   const [formState, inputHandler, setFormData] = useForm(
     {
@@ -125,7 +125,7 @@ const UpdatePlace = () => {
             initialValid={true}
           />
           <Button type="submit" disabled={!formState.isValid}>
-            UPDATE PLACE
+            Update Place
           </Button>
         </form>
       )}

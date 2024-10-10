@@ -14,7 +14,7 @@ const getPlaceById = async (req, res, next) => {
     place = await Place.findById(placeId);
   } catch (err) {
     const error = new HttpError(
-      "Error finding place",
+      "Error finding destination",
       500
     );
     return next(error);
@@ -22,7 +22,7 @@ const getPlaceById = async (req, res, next) => {
 
   if (!place) {
     const error = new HttpError(
-      "The User has not shared a place",
+      "The User has not shared a destination",
       404
     );
     return next(error);
@@ -40,7 +40,7 @@ const getPlacesByUserId = async (req, res, next) => {
     userWithPlaces = await User.findById(userId).populate("places");
   } catch (err) {
     const error = new HttpError(
-      "Fetching places failed",
+      "Error fetching places",
       500
     );
     return next(error);
@@ -49,7 +49,7 @@ const getPlacesByUserId = async (req, res, next) => {
   // if (!places || places.length === 0) {
   if (!userWithPlaces || userWithPlaces.places.length === 0) {
     return next(
-      new HttpError("Could not find places for the provided user id.", 404)
+      new HttpError("Could not find destination", 404)
     );
   }
 
@@ -64,7 +64,7 @@ const createPlace = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return next(
-      new HttpError("Invalid inputs passed, please check your data.", 422)
+      new HttpError("Invalid input data", 422)
     );
   }
 
@@ -91,14 +91,14 @@ const createPlace = async (req, res, next) => {
     user = await User.findById(req.userData.userId);
   } catch (err) {
     const error = new HttpError(
-      "Creating place failed, please try again.",
+      "Error creating destination",
       500
     );
     return next(error);
   }
 
   if (!user) {
-    const error = new HttpError("Could not find user for provided id.", 404);
+    const error = new HttpError("Could not find user", 404);
     return next(error);
   }
 
@@ -113,7 +113,7 @@ const createPlace = async (req, res, next) => {
     await sess.commitTransaction();
   } catch (err) {
     const error = new HttpError(
-      "Creating place failed, please try again.",
+      "Error creating destination",
       500
     );
     return next(error);
@@ -126,7 +126,7 @@ const updatePlace = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return next(
-      new HttpError("Invalid inputs passed, please check your data.", 422)
+      new HttpError("Invalid input data", 422)
     );
   }
 
@@ -137,15 +137,11 @@ const updatePlace = async (req, res, next) => {
   try {
     place = await Place.findById(placeId);
   } catch (err) {
-    const error = new HttpError(
-      "Something went wrong, could not update place.",
-      500
-    );
     return next(error);
   }
 
   if (place.creator.toString() !== req.userData.userId) {
-    const error = new HttpError("You are NOT allowed to edit this place.", 401);
+    const error = new HttpError("You are NOT allowed to edit this destination", 401);
     return next(error);
   }
 
@@ -155,7 +151,7 @@ const updatePlace = async (req, res, next) => {
   try {
     await place.save();
   } catch (err) {
-    const error = new HttpError("Error when updating place.", 500);
+    const error = new HttpError("Error updating destination", 500);
     return next(error);
   }
 
@@ -171,17 +167,17 @@ const deletePlace = async (req, res, next) => {
     console.log(place);
   } catch (err) {
     console.log(err);
-    const error = new HttpError("Error when deleting place.", 500);
+    const error = new HttpError("Error deleting destination", 500);
     return next(error);
   }
 
   if (!place) {
-    const error = new HttpError("Could not find place for this id.", 404);
+    const error = new HttpError("Error finding destination", 404);
     return next(error);
   }
   if (place.creator.id !== req.userData.userId) {
     const error = new HttpError(
-      "You are NOT allowed to delete this place.",
+      "You are NOT allowed to delete this destination",
       401
     );
     return next(error);
@@ -198,7 +194,7 @@ const deletePlace = async (req, res, next) => {
     await sess.commitTransaction();
   } catch (err) {
     console.log(err);
-    const error = new HttpError("Error when deleting place.", 500);
+    const error = new HttpError("Error deleting destination", 500);
     return next(error);
   }
 
@@ -206,7 +202,7 @@ const deletePlace = async (req, res, next) => {
     console.log(err);
   });
 
-  res.status(200).json({ message: "Deleted place." });
+  res.status(200).json({ message: "Destination Deleted" });
 };
 
 exports.getPlaceById = getPlaceById;

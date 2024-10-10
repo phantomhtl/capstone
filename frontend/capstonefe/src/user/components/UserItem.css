@@ -1,7 +1,7 @@
 .user-item {
   margin: 1rem;
-  width: calc(45% - 2rem);
-  min-width: 17.5rem;
+  width: calc(50% - 2rem);
+  min-width: 20rem;
 }
 
 .user-item a {
@@ -12,7 +12,7 @@
   text-decoration: none;
   padding: 1rem;
   color: white;
-  background: #292929;
+  background: slategray;
 }
 
 .user-item a:hover,
@@ -31,9 +31,8 @@
 }
 
 .user-item__info h2 {
-  font-size: 1.5rem;
-  margin: 0 0 0.5rem 0;
-  font-weight: normal;
+  font-size: 2rem;
+  /* margin: 0 0 0.5rem 0; */
   color: #ffd900;
 }
 
@@ -41,7 +40,7 @@
 .user-item:active h2,
 .user-item:hover h3,
 .user-item:active h3 {
-  color: #292929;
+  color: #191818;
 }
 
 .user-item__info h3 {

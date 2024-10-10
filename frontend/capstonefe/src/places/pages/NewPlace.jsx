@@ -66,9 +66,9 @@ const NewPlace = () => {
           id="title"
           element="input"
           type="text"
-          label="Title"
+          label="Destination"
           validators={[VALIDATOR_REQUIRE()]}
-          errorText="Please enter a title"
+          errorText="Please enter a destination"
           onInput={inputHandler}
         />
         <Input
@@ -76,7 +76,7 @@ const NewPlace = () => {
           element="textarea"
           label="Description"
           validators={[VALIDATOR_MINLENGTH(5)]}
-          errorText="Please enter a description (at least 5 characters)"
+          errorText="Please enter a description that is no less than 5 characters"
           onInput={inputHandler}
         />
         <Input
@@ -84,13 +84,13 @@ const NewPlace = () => {
           element="input"
           label="Address"
           validators={[VALIDATOR_REQUIRE()]}
-          errorText="Please enter the address"
+          errorText="Please enter the address of the destination"
           onInput={inputHandler}
         />
         <ImageUpload
           id="image"
           onInput={inputHandler}
-          errorText="Please provide an image"
+          errorText="Please provide an image for your destination"
         />
         <Button type="submit" disabled={!formState.isValid}>
           Add Place
