@@ -1,19 +1,18 @@
-import React, { useContext } from 'react';
-import { useNavigate } from 'react-router-dom'; // Change from useHistory to useNavigate
-
-import Input from '../../shared/components/FormElements/Input';
-import Button from '../../shared/components/FormElements/Button';
-import ErrorModal from '../../shared/components/UIElements/ErrorModal';
-import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner';
-import ImageUpload from '../../shared/components/FormElements/ImageUpload';
+import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import Input from "../../common/components/FormElements/Input";
+import Button from "../../common/components/FormElements/Button";
+import ErrorModal from "../../common/components/UIElements/ErrorModal";
+import LoadingSpinner from "../../common/components/UIElements/LoadingSpinner";
+import ImageUpload from "../../common/components/FormElements/ImageUpload";
 import {
   VALIDATOR_REQUIRE,
-  VALIDATOR_MINLENGTH
-} from '../../shared/util/validators';
-import { useForm } from '../../shared/hooks/form-hook';
-import { useHttpClient } from '../../shared/hooks/http-hook';
-import { AuthContext } from '../../shared/context/auth-context';
-import './PlaceForm.css';
+  VALIDATOR_MINLENGTH,
+} from "../../common/util/validators";
+import { useForm } from "../../common/hooks/form-hook";
+import { useHttpClient } from "../../common/hooks/http-hook";
+import { AuthContext } from "../../common/context/auth-context";
+import "./PlaceForm.css";
 
 const NewPlace = () => {
   const auth = useContext(AuthContext);
@@ -21,44 +20,46 @@ const NewPlace = () => {
   const [formState, inputHandler] = useForm(
     {
       title: {
-        value: '',
-        isValid: false
+        value: "",
+        isValid: false,
       },
       description: {
-        value: '',
-        isValid: false
+        value: "",
+        isValid: false,
       },
       address: {
-        value: '',
-        isValid: false
+        value: "",
+        isValid: false,
       },
       image: {
         value: null,
-        isValid: false
-      }
+        isValid: false,
+      },
     },
     false
   );
 
-  const navigate = useNavigate(); // Replace useHistory with useNavigate
+  const navigate = useNavigate();
 
-  const placeSubmitHandler = async event => {
-    event.preventDefault();
+  const placeSubmitHandler = async (e) => {
+    e.preventDefault();
     try {
       const formData = new FormData();
-      formData.append('title', formState.inputs.title.value);
-      formData.append('description', formState.inputs.description.value);
-      formData.append('address', formState.inputs.address.value);
-      formData.append('image', formState.inputs.image.value);
-      await sendRequest('http://localhost:5000/api/places', 'POST', formData, {
-        Authorization: 'Bearer ' + auth.token
+      formData.append("title", formState.inputs.title.value);
+      formData.append("description", formState.inputs.description.value);
+      formData.append("address", formState.inputs.address.value);
+      formData.append("image", formState.inputs.image.value);
+      await sendRequest("http://localhost:5000/api/places", "POST", formData, {
+        Authorization: "Bearer " + auth.token,
       });
-      navigate('/'); // Use navigate instead of history.push
-    } catch (err) {}
+      navigate("/");
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
-    <React.Fragment>
+    <>
       <ErrorModal error={error} onClear={clearError} />
       <form className="place-form" onSubmit={placeSubmitHandler}>
         {isLoading && <LoadingSpinner asOverlay />}
@@ -76,7 +77,7 @@ const NewPlace = () => {
           element="textarea"
           label="Description"
           validators={[VALIDATOR_MINLENGTH(5)]}
-          errorText="Please enter a description that is no less than 5 characters"
+          errorText="Please enter a description that is at least 5 characters"
           onInput={inputHandler}
         />
         <Input
@@ -96,7 +97,7 @@ const NewPlace = () => {
           Add Place
         </Button>
       </form>
-    </React.Fragment>
+    </>
   );
 };
 

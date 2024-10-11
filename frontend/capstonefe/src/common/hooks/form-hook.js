@@ -1,5 +1,6 @@
 import { useCallback, useReducer } from 'react';
 
+// Form reducer function to handle state updates
 const formReducer = (state, action) => {
   switch (action.type) {
     case 'INPUT_CHANGE':
@@ -8,11 +9,9 @@ const formReducer = (state, action) => {
         if (!state.inputs[inputId]) {
           continue;
         }
-        if (inputId === action.inputId) {
-          formIsValid = formIsValid && action.isValid;
-        } else {
-          formIsValid = formIsValid && state.inputs[inputId].isValid;
-        }
+        formIsValid = (inputId === action.inputId) 
+          ? formIsValid && action.isValid 
+          : formIsValid && state.inputs[inputId].isValid;
       }
       return {
         ...state,
@@ -32,6 +31,7 @@ const formReducer = (state, action) => {
   }
 };
 
+// Custom hook to manage form state
 export const useForm = (initialInputs, initialFormValidity) => {
   const [formState, dispatch] = useReducer(formReducer, {
     inputs: initialInputs,
@@ -41,8 +41,8 @@ export const useForm = (initialInputs, initialFormValidity) => {
   const inputHandler = useCallback((id, value, isValid) => {
     dispatch({
       type: 'INPUT_CHANGE',
-      value: value,
-      isValid: isValid,
+      value,
+      isValid,
       inputId: id
     });
   }, []);
