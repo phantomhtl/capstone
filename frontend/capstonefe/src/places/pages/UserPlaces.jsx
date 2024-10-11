@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-
 import PlaceList from "../components/PlaceList";
 import ErrorModal from "../../common/components/UIElements/ErrorModal";
 import LoadingSpinner from "../../common/components/UIElements/LoadingSpinner";
@@ -19,7 +18,9 @@ const UserPlaces = () => {
           `http://localhost:5000/api/places/user/${userId}`
         );
         setLoadedPlaces(responseData.places);
-      } catch (err) {}
+      } catch (err) {
+        console.log(err);
+      }
     };
     fetchPlaces();
   }, [sendRequest, userId]);
@@ -31,7 +32,7 @@ const UserPlaces = () => {
   };
 
   return (
-    <React.Fragment>
+    <>
       <ErrorModal error={error} onClear={clearError} />
       {isLoading && (
         <div className="center">
@@ -41,7 +42,7 @@ const UserPlaces = () => {
       {!isLoading && loadedPlaces && (
         <PlaceList items={loadedPlaces} onDeletePlace={placeDeletedHandler} />
       )}
-    </React.Fragment>
+    </>
   );
 };
 

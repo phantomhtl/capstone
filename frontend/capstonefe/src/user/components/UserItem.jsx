@@ -1,6 +1,4 @@
-import React from "react";
 import { Link } from "react-router-dom";
-
 import Avatar from "../../common/components/UIElements/Avatar";
 import Card from "../../common/components/UIElements/Card";
 import "./UserItem.css";

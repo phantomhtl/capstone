@@ -1,7 +1,7 @@
 .user-item {
   margin: 1rem;
   width: calc(50% - 2rem);
-  min-width: 20rem;
+  min-width: 16rem;
 }
 
 .user-item a {
@@ -32,7 +32,6 @@
 
 .user-item__info h2 {
   font-size: 2rem;
-  /* margin: 0 0 0.5rem 0; */
   color: #ffd900;
 }
 
@@ -40,7 +39,7 @@
 .user-item:active h2,
 .user-item:hover h3,
 .user-item:active h3 {
-  color: #191818;
+  color: black;
 }
 
 .user-item__info h3 {

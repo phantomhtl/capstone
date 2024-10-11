@@ -1,84 +1,80 @@
-import React, { useReducer, useEffect } from 'react';
+import { useReducer, useEffect } from "react";
+import { validate } from "../../util/validators";
+import "./Input.css";
 
-import { validate } from '../../util/validators';
-import './Input.css';
-
+// Input state reducer
 const inputReducer = (state, action) => {
   switch (action.type) {
-    case 'CHANGE':
+    case "CHANGE":
       return {
         ...state,
         value: action.val,
-        isValid: validate(action.val, action.validators)
+        isValid: validate(action.val, action.validators),
       };
-    case 'TOUCH': {
+    case "TOUCH":
       return {
         ...state,
-        isTouched: true
+        isTouched: true,
       };
-    }
     default:
       return state;
   }
 };
 
-const Input = props => {
+const Input = (props) => {
   const [inputState, dispatch] = useReducer(inputReducer, {
-    value: props.initialValue || '',
+    value: props.initialValue || "",
     isTouched: false,
-    isValid: props.initialValid || false
+    isValid: props.initialValid || false,
   });
 
-  const { id, onInput } = props;
-  const { value, isValid } = inputState;
+  const { id, onInput, element: inputElement, type, placeholder, label, rows, errorText, validators } = props;
+  const { value, isValid, isTouched } = inputState;
 
+  // Effect to call onInput whenever input state changes
   useEffect(() => {
     onInput(id, value, isValid);
   }, [id, value, isValid, onInput]);
 
-  const changeHandler = event => {
+  // Change handler for input value
+  const changeHandler = (event) => {
     dispatch({
-      type: 'CHANGE',
+      type: "CHANGE",
       val: event.target.value,
-      validators: props.validators
+      validators,
     });
   };
 
+  // Touch handler to mark the input as touched
   const touchHandler = () => {
-    dispatch({
-      type: 'TOUCH'
-    });
+    dispatch({ type: "TOUCH" });
   };
 
-  const element =
-    props.element === 'input' ? (
-      <input
-        id={props.id}
-        type={props.type}
-        placeholder={props.placeholder}
-        onChange={changeHandler}
-        onBlur={touchHandler}
-        value={inputState.value}
-      />
-    ) : (
-      <textarea
-        id={props.id}
-        rows={props.rows || 3}
-        onChange={changeHandler}
-        onBlur={touchHandler}
-        value={inputState.value}
-      />
-    );
+  // Render input or textarea based on the props
+  const renderedElement = inputElement === "input" ? (
+    <input
+      id={id}
+      type={type}
+      placeholder={placeholder}
+      onChange={changeHandler}
+      onBlur={touchHandler}
+      value={inputState.value}
+    />
+  ) : (
+    <textarea
+      id={id}
+      rows={rows || 3}
+      onChange={changeHandler}
+      onBlur={touchHandler}
+      value={inputState.value}
+    />
+  );
 
   return (
-    <div
-      className={`form-control ${!inputState.isValid &&
-        inputState.isTouched &&
-        'form-control--invalid'}`}
-    >
-      <label htmlFor={props.id}>{props.label}</label>
-      {element}
-      {!inputState.isValid && inputState.isTouched && <p>{props.errorText}</p>}
+    <div className={`form-control ${!isValid && isTouched && "form-control--invalid"}`}>
+      <label htmlFor={id}>{label}</label>
+      {renderedElement}
+      {!isValid && isTouched && <p>{errorText}</p>}
     </div>
   );
 };

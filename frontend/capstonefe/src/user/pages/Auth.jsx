@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import { useState, useContext } from "react";
 import Card from "../../common/components/UIElements/Card";
 import Input from "../../common/components/FormElements/Input";
 import Button from "../../common/components/FormElements/Button";
@@ -63,8 +63,8 @@ const Auth = () => {
     setIsLoginMode((prevMode) => !prevMode);
   };
 
-  const authSubmitHandler = async (event) => {
-    event.preventDefault();
+  const authSubmitHandler = async (e) => {
+    e.preventDefault();
 
     if (isLoginMode) {
       try {
@@ -80,7 +80,9 @@ const Auth = () => {
           }
         );
         auth.login(responseData.userId, responseData.token);
-      } catch (err) {}
+      } catch (err) {
+        console.log(err);
+      }
     } else {
       try {
         const formData = new FormData();
@@ -95,12 +97,14 @@ const Auth = () => {
         );
 
         auth.login(responseData.userId, responseData.token);
-      } catch (err) {}
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
 
   return (
-    <React.Fragment>
+    <>
       <ErrorModal error={error} onClear={clearError} />
       <Card className="authentication">
         {isLoading && <LoadingSpinner asOverlay />}
@@ -152,7 +156,7 @@ const Auth = () => {
           Switch To {isLoginMode ? "SignUp" : "Login"}
         </Button>
       </Card>
-    </React.Fragment>
+    </>
   );
 };
 

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import { useState, useContext } from "react";
 import Card from "../../common/components/UIElements/Card";
 import Button from "../../common/components/FormElements/Button";
 import Modal from "../../common/components/UIElements/Modal";
@@ -67,8 +67,8 @@ const PlaceItem = (props) => {
         show={showMap}
         onCancel={closeMapHandler}
         header={props.address}
-        contentClass="place-item__modal-content"
-        footerClass="place-item__modal-actions"
+        contentClass="place-item-modal-content"
+        footerClass="place-item-modal-actions"
         footer={<Button onClick={closeMapHandler}>Close</Button>}
       >
         <div className="map-container">
@@ -79,7 +79,7 @@ const PlaceItem = (props) => {
         show={showConfirmModal}
         onCancel={cancelDeleteHandler}
         header="Are you sure?"
-        footerClass="place-item__modal-actions"
+        footerClass="place-item-modal-actions"
         footer={
           <>
             <Button inverse onClick={cancelDeleteHandler}>
@@ -94,20 +94,20 @@ const PlaceItem = (props) => {
         <p>Are you sure you want to delete this place?</p>
       </Modal>
       <li className="place-item">
-        <Card className="place-item__content">
+        <Card className="place-item-content">
           {isLoading && <LoadingSpinner asOverlay />}
-          <div className="place-item__image">
+          <div className="place-item-image">
             <img
               src={`http://localhost:5000/${props.image}`}
               alt={props.title}
             />
           </div>
-          <div className="place-item__info">
+          <div className="place-item-info">
             <h2>{props.title}</h2>
             <h3>{props.address}</h3>
             <p>{props.description}</p>
           </div>
-          <div className="place-item__actions">
+          <div className="place-item-actions">
             <Button inverse onClick={openMapHandler}>
               View on Map
             </Button>

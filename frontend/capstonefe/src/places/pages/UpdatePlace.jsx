@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 import Input from "../../common/components/FormElements/Input";
@@ -61,8 +61,8 @@ const UpdatePlace = () => {
     fetchPlace();
   }, [sendRequest, placeId, setFormData]);
 
-  const placeUpdateSubmitHandler = async (event) => {
-    event.preventDefault();
+  const placeUpdateSubmitHandler = async (e) => {
+    e.preventDefault();
     try {
       await sendRequest(
         `http://localhost:5000/api/places/${placeId}`,
@@ -77,7 +77,9 @@ const UpdatePlace = () => {
         }
       );
       navigate("/" + auth.userId + "/places");
-    } catch (err) {}
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   if (isLoading) {
@@ -99,7 +101,7 @@ const UpdatePlace = () => {
   }
 
   return (
-    <React.Fragment>
+    <>
       <ErrorModal error={error} onClear={clearError} />
       {!isLoading && loadedPlace && (
         <form className="place-form" onSubmit={placeUpdateSubmitHandler}>
@@ -129,7 +131,7 @@ const UpdatePlace = () => {
           </Button>
         </form>
       )}
-    </React.Fragment>
+    </>
   );
 };
 

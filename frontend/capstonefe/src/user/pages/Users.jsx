@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-
+import { useEffect, useState } from "react";
 import UsersList from "../components/UsersList";
 import ErrorModal from "../../common/components/UIElements/ErrorModal";
 import LoadingSpinner from "../../common/components/UIElements/LoadingSpinner";
@@ -15,15 +14,16 @@ const Users = () => {
         const responseData = await sendRequest(
           "http://localhost:5000/api/users"
         );
-
         setLoadedUsers(responseData.users);
-      } catch (err) {}
+      } catch (err) {
+        console.log(err)
+      }
     };
     fetchUsers();
   }, [sendRequest]);
 
   return (
-    <React.Fragment>
+    <>
       <ErrorModal error={error} onClear={clearError} />
       {isLoading && (
         <div className="center">
@@ -31,7 +31,7 @@ const Users = () => {
         </div>
       )}
       {!isLoading && loadedUsers && <UsersList items={loadedUsers} />}
-    </React.Fragment>
+    </>
   );
 };
 
