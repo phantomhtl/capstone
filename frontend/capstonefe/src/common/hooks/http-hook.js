@@ -1,13 +1,15 @@
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback, useRef, useEffect } from "react";
 
+// Custom hook for handling HTTP requests
 export const useHttpClient = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState();
+  const [error, setError] = useState(null);
 
   const activeHttpRequests = useRef([]);
 
+  // Function to send HTTP requests
   const sendRequest = useCallback(
-    async (url, method = 'GET', body = null, headers = {}) => {
+    async (url, method = "GET", body = null, headers = {}) => {
       setIsLoading(true);
       const httpAbortCtrl = new AbortController();
       activeHttpRequests.current.push(httpAbortCtrl);
@@ -17,13 +19,14 @@ export const useHttpClient = () => {
           method,
           body,
           headers,
-          signal: httpAbortCtrl.signal
+          signal: httpAbortCtrl.signal,
         });
 
         const responseData = await response.json();
 
+        // Remove the aborted request controller from the active requests
         activeHttpRequests.current = activeHttpRequests.current.filter(
-          reqCtrl => reqCtrl !== httpAbortCtrl
+          (reqCtrl) => reqCtrl !== httpAbortCtrl
         );
 
         if (!response.ok) {
@@ -35,20 +38,21 @@ export const useHttpClient = () => {
       } catch (err) {
         setError(err.message);
         setIsLoading(false);
-        throw err;
+        throw err; // Rethrow error for further handling
       }
     },
     []
   );
 
+  // Function to clear any existing errors
   const clearError = () => {
     setError(null);
   };
 
+  // Cleanup effect to abort ongoing requests when the component unmounts
   useEffect(() => {
     return () => {
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      activeHttpRequests.current.forEach(abortCtrl => abortCtrl.abort());
+      activeHttpRequests.current.forEach((abortCtrl) => abortCtrl.abort());
     };
   }, []);
 
