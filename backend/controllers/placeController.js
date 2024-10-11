@@ -6,26 +6,45 @@ const getCoordsForAddress = require("../util/location");
 const Place = require("../models/place");
 const User = require("../models/user");
 
+// Helper functions
+const findPlaceById = async (placeId) => {
+  return await Place.findById(placeId);
+};
+
+const findUserById = async (userId) => {
+  return await User.findById(userId).populate("places");
+};
+
+const createTransaction = async (createdPlace, user) => {
+  const sess = await mongoose.startSession();
+  sess.startTransaction();
+  await createdPlace.save({ session: sess });
+  user.places.push(createdPlace);
+  await user.save({ session: sess });
+  await sess.commitTransaction();
+};
+
+const deleteImage = (imagePath) => {
+  fs.unlink(imagePath, (err) => {
+    if (err) {
+      console.log(err);
+    }
+  });
+};
+
+// Controller functions
 const getPlaceById = async (req, res, next) => {
   const placeId = req.params.pid;
 
   let place;
   try {
-    place = await Place.findById(placeId);
+    place = await findPlaceById(placeId);
   } catch (err) {
-    const error = new HttpError(
-      "Error finding destination",
-      500
-    );
-    return next(error);
+    return next(new HttpError("Error finding destination", 500));
   }
 
   if (!place) {
-    const error = new HttpError(
-      "The User has not shared a destination",
-      404
-    );
-    return next(error);
+    return next(new HttpError("The User has not shared a destination", 404));
   }
 
   res.json({ place: place.toObject({ getters: true }) });
@@ -34,23 +53,15 @@ const getPlaceById = async (req, res, next) => {
 const getPlacesByUserId = async (req, res, next) => {
   const userId = req.params.uid;
 
-  // let places;
   let userWithPlaces;
   try {
-    userWithPlaces = await User.findById(userId).populate("places");
+    userWithPlaces = await findUserById(userId);
   } catch (err) {
-    const error = new HttpError(
-      "Error fetching places",
-      500
-    );
-    return next(error);
+    return next(new HttpError("Error fetching places", 500));
   }
 
-  // if (!places || places.length === 0) {
   if (!userWithPlaces || userWithPlaces.places.length === 0) {
-    return next(
-      new HttpError("Could not find destination", 404)
-    );
+    return next(new HttpError("Could not find destination", 404));
   }
 
   res.json({
@@ -63,9 +74,7 @@ const getPlacesByUserId = async (req, res, next) => {
 const createPlace = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return next(
-      new HttpError("Invalid input data", 422)
-    );
+    return next(new HttpError("Invalid input data", 422));
   }
 
   const { title, description, address } = req.body;
@@ -88,35 +97,19 @@ const createPlace = async (req, res, next) => {
 
   let user;
   try {
-    user = await User.findById(req.userData.userId);
+    user = await findUserById(req.userData.userId);
   } catch (err) {
-    const error = new HttpError(
-      "Error creating destination",
-      500
-    );
-    return next(error);
+    return next(new HttpError("Error creating destination", 500));
   }
 
   if (!user) {
-    const error = new HttpError("Could not find user", 404);
-    return next(error);
+    return next(new HttpError("Could not find user", 404));
   }
 
-  // console.log(user);
-
   try {
-    const sess = await mongoose.startSession();
-    sess.startTransaction();
-    await createdPlace.save({ session: sess });
-    user.places.push(createdPlace);
-    await user.save({ session: sess });
-    await sess.commitTransaction();
+    await createTransaction(createdPlace, user);
   } catch (err) {
-    const error = new HttpError(
-      "Error creating destination",
-      500
-    );
-    return next(error);
+    return next(new HttpError("Error creating destination", 500));
   }
 
   res.status(201).json({ place: createdPlace });
@@ -125,9 +118,7 @@ const createPlace = async (req, res, next) => {
 const updatePlace = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return next(
-      new HttpError("Invalid input data", 422)
-    );
+    return next(new HttpError("Invalid input data", 422));
   }
 
   const { title, description } = req.body;
@@ -135,14 +126,15 @@ const updatePlace = async (req, res, next) => {
 
   let place;
   try {
-    place = await Place.findById(placeId);
+    place = await findPlaceById(placeId);
   } catch (err) {
-    return next(error);
+    return next(new HttpError("Error updating destination", 500));
   }
 
   if (place.creator.toString() !== req.userData.userId) {
-    const error = new HttpError("You are NOT allowed to edit this destination", 401);
-    return next(error);
+    return next(
+      new HttpError("You are NOT allowed to edit this destination", 401)
+    );
   }
 
   place.title = title;
@@ -151,8 +143,7 @@ const updatePlace = async (req, res, next) => {
   try {
     await place.save();
   } catch (err) {
-    const error = new HttpError("Error updating destination", 500);
-    return next(error);
+    return next(new HttpError("Error updating destination", 500));
   }
 
   res.status(200).json({ place: place.toObject({ getters: true }) });
@@ -160,27 +151,22 @@ const updatePlace = async (req, res, next) => {
 
 const deletePlace = async (req, res, next) => {
   const placeId = req.params.pid;
-  console.log(placeId);
+
   let place;
   try {
     place = await Place.findById(placeId).populate("creator");
-    console.log(place);
   } catch (err) {
-    console.log(err);
-    const error = new HttpError("Error deleting destination", 500);
-    return next(error);
+    return next(new HttpError("Error deleting destination", 500));
   }
 
   if (!place) {
-    const error = new HttpError("Error finding destination", 404);
-    return next(error);
+    return next(new HttpError("Error finding destination", 404));
   }
+
   if (place.creator.id !== req.userData.userId) {
-    const error = new HttpError(
-      "You are NOT allowed to delete this destination",
-      401
+    return next(
+      new HttpError("You are NOT allowed to delete this destination", 401)
     );
-    return next(error);
   }
 
   const imagePath = place.image;
@@ -193,18 +179,15 @@ const deletePlace = async (req, res, next) => {
     await place.creator.save({ session: sess });
     await sess.commitTransaction();
   } catch (err) {
-    console.log(err);
-    const error = new HttpError("Error deleting destination", 500);
-    return next(error);
+    return next(new HttpError("Error deleting destination", 500));
   }
 
-  fs.unlink(imagePath, (err) => {
-    console.log(err);
-  });
+  deleteImage(imagePath);
 
   res.status(200).json({ message: "Destination Deleted" });
 };
 
+// Export functions
 exports.getPlaceById = getPlaceById;
 exports.getPlacesByUserId = getPlacesByUserId;
 exports.createPlace = createPlace;

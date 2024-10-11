@@ -8,9 +8,7 @@ const auth = require("../middleware/auth");
 const router = express.Router();
 
 router.get("/:pid", placeController.getPlaceById);
-
 router.get("/user/:uid", placeController.getPlacesByUserId);
-
 router.use(auth);
 
 router.post(
