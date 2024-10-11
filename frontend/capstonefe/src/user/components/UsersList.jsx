@@ -1,5 +1,3 @@
-import React from "react";
-
 import UserItem from "./UserItem";
 import Card from "../../common/components/UIElements/Card";
 import "./UsersList.css";

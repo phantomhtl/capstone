@@ -20,17 +20,17 @@
   background: #ffd900;
 }
 
-.user-item__content {
+.user-item-content {
   padding: 0;
 }
 
-.user-item__image {
+.user-item-image {
   width: 4rem;
   height: 4rem;
   margin-right: 1rem;
 }
 
-.user-item__info h2 {
+.user-item-info h2 {
   font-size: 2rem;
   color: #ffd900;
 }
@@ -42,6 +42,6 @@
   color: black;
 }
 
-.user-item__info h3 {
+.user-item-info h3 {
   margin: 0;
 }

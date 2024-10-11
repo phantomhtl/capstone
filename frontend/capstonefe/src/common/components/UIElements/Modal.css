@@ -9,7 +9,7 @@
   border-radius: 8px;
 }
 
-.modal__header {
+.modal-header {
   width: 100%;
   padding: 1rem 0.5rem;
   background: #f00a0a;
@@ -17,17 +17,17 @@
   color: white;
 }
 
-.modal__header h2 {
+.modal-header h2 {
   margin: 0.5rem;
 }
 
-.modal__content {
+.modal-content {
   padding: 1rem 0.5rem;
   font-size: large;
   text-align: center;
 }
 
-.modal__footer {
+.modal-footer {
   padding: 1rem 0.5rem;
   text-align: center;
 }
